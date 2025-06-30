@@ -260,7 +260,7 @@
         <div class="portfolio">
             <h1 class="section-heading-text-services title-portfolio">Let's Work Together!</h1>
             <div id="message"></div>
-            <form action="/api/contact" method="POST" class="contact-info row">
+            <form id="contact-form" class="contact-info row">
                 <div class="col-lg-6 col-md-6 col-sm-12">
                     <div class="main-in form-group">
                         <p>Name*</p>
@@ -305,15 +305,27 @@
         </div>
     </div>
     <script>
-        // Show success or error message from URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const status = urlParams.get('status');
-        if (status) {
-            const messageDiv = document.getElementById('message');
-            messageDiv.textContent = status;
-            messageDiv.className = status.includes('Thank you') ? 'success' : 'error';
-        }
-    </script>
+document.getElementById("contact-form").addEventListener("submit", async function (e) {
+  e.preventDefault();
+
+  const formData = {
+    name: this.name.value,
+    email: this.email.value,
+    message: this.message.value,
+  };
+
+  const res = await fetch("/api/contact", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(formData),
+  });
+
+  const result = await res.json();
+  alert(result.message);
+});
+</script>
+
+    
                             <!-- <div class="col-12 main-location"> 
                                 <iframe
                                     src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d193597.13828382973!2d-74.2913111195153!3d40.69698241526669!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c24fa5d33f083b%3A0xc80b8f06e177fe62!2sNew%20York%2C%20NY%2C%20USA!5e0!3m2!1sen!2sau!4v1738663272509!5m2!1sen!2sau"
