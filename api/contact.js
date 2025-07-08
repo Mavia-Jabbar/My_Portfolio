@@ -9,7 +9,7 @@ export default async function handler(req, res) {
     service: "gmail",
     auth: {
       user: "maviajabbar460@gmail.com",        // ⛔ HARDCODED
-      pass: "vnbd uncd vpxr uszv",     // ⛔ HARDCODED
+      pass: "azso hfnk itgd yliv",     // ⛔ HARDCODED
     },
   });
 
