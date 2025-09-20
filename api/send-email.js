@@ -8,19 +8,19 @@ export default async function handler(req, res) {
   const { name, email, subject, message } = req.body;
 
   try {
-    // Transporter setup with Gmail App Password
+    console.log("Incoming data:", { name, email, subject, message });
+
     let transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: process.env.EMAIL_USER, // your Gmail
-        pass: process.env.EMAIL_PASS, // Gmail App Password
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
       },
     });
 
-    // Send the email
     await transporter.sendMail({
       from: `"${name}" <${email}>`,
-      to: process.env.EMAIL_USER, // your own Gmail inbox
+      to: process.env.EMAIL_USER,
       subject: subject || "New Contact Form Submission",
       text: message,
       html: `<p><strong>From:</strong> ${name} (${email})</p>
@@ -30,7 +30,7 @@ export default async function handler(req, res) {
 
     res.status(200).json({ message: "Email sent successfully!" });
   } catch (err) {
-    console.error(err);
+    console.error("Email error:", err);
     res
       .status(500)
       .json({ message: "Something went wrong.", error: err.message });
