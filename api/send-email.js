@@ -2,16 +2,16 @@ import nodemailer from "nodemailer";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
-    return res.status(405).json({ message: "Only POST requests allowed" });
+    return res.status(405).json({ message: "Method not allowed" });
   }
 
-  const { name, email, subject, message } = req.body;
+  const { name, email, message } = req.body;
 
   try {
-    console.log("Incoming data:", { name, email, subject, message });
-
     let transporter = nodemailer.createTransport({
-      service: "gmail",
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
@@ -19,20 +19,15 @@ export default async function handler(req, res) {
     });
 
     await transporter.sendMail({
-      from: `"${name}" <${email}>`,
+      from: process.env.EMAIL_USER,
       to: process.env.EMAIL_USER,
-      subject: subject || "New Contact Form Submission",
-      text: message,
-      html: `<p><strong>From:</strong> ${name} (${email})</p>
-             <p><strong>Message:</strong></p>
-             <p>${message}</p>`,
+      subject: `New Contact Form Message from ${name}`,
+      text: `Email: ${email}\n\nMessage: ${message}`,
     });
 
-    res.status(200).json({ message: "Email sent successfully!" });
+    res.status(200).json({ success: true, message: "Email sent successfully" });
   } catch (err) {
     console.error("Email error:", err);
-    res
-      .status(500)
-      .json({ message: "Something went wrong.", error: err.message });
+    res.status(500).json({ success: false, message: "Something went wrong" });
   }
 }
